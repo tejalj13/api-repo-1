@@ -5,7 +5,8 @@ from core.views import (
     ProviderCreateView, 
     AvailableSlotsView, 
     BookAppointmentView, 
-    AppointmentListView
+    AppointmentListView,
+    GenerateSlotsView
 )
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path('slots/', AvailableSlotsView.as_view(), name='slots'),
     path('book/', BookAppointmentView.as_view(), name='book'),
     path('appointments/', AppointmentListView.as_view(), name='appointments'),
+    path('api/generate-slots/', GenerateSlotsView.as_view(), name='generate-slots'),
 ]

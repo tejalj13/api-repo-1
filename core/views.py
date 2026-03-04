@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime, timedelta
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import make_password
@@ -127,3 +128,42 @@ class AppointmentListView(APIView):
         } for appt in appointments]
 
         return Response({"appointments": data}, status=status.HTTP_200_OK)
+        
+class GenerateSlotsView(APIView):
+    permission_classes = [HasAPIKey]
+
+    def post(self, request):
+        provider_id = request.data.get('provider_id')
+        date_str = request.data.get('date')  # YYYY-MM-DD
+        start_time_str = request.data.get('start_time') # HH:MM
+        end_time_str = request.data.get('end_time')     # HH:MM
+
+        try:
+            provider = ServiceProvider.objects.get(id=provider_id, organization=request.organization)
+            
+            # Convert strings to datetime objects for math
+            current_time = datetime.strptime(start_time_str, '%H:%M')
+            end_time = datetime.strptime(end_time_str, '%H:%M')
+            
+            slots_created = 0
+            while current_time < end_time:
+                # Create the slot if it doesn't already exist to prevent duplicates
+                AvailabilitySlot.objects.get_or_create(
+                    provider=provider,
+                    date=date_str,
+                    time=current_time.time(),
+                    defaults={'is_booked': False}
+                )
+                
+                # Move forward by 30 minutes
+                current_time += timedelta(minutes=30)
+                slots_created += 1
+
+            return Response({
+                "message": f"Successfully generated {slots_created} slots for {date_str}"
+            }, status=status.HTTP_201_CREATED)
+
+        except ServiceProvider.DoesNotExist:
+            return Response({"error": "Provider not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
