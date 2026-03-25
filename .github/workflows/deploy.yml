@@ -1,0 +1,36 @@
+name: CI/CD Pipeline Deploy & ZAP
+ 
+on:
+  push:
+    branches:
+      - main  # Triggers the pipeline when you push to main
+ 
+jobs:
+  # ---------------------------------------------------
+  # STAGE 1: DEPLOYMENT
+  # ---------------------------------------------------
+  deploy_to_elastic_beanstalk:
+    name: Deploy to AWS EB
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+ 
+      - name: Create ZIP deployment package
+        # Zips your Django app, ignoring git folders so the file stays small
+        run: |
+      
+          zip -r deploy.zip . -x "*.git*" ".github*"
+ 
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v22
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_session_token: ${{ secrets.AWS_SESSION_TOKEN }}
+          application_name: appointmentservice-api
+          environment_name: api-env
+          version_label: "appointmentserviceapi-${{ github.sha }}" 
+          region: us-east-1
+          deployment_package: deploy.zip
+ 
