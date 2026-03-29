@@ -38,6 +38,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '.vfs.cloud9.us-east-1.amazonaws.com',
     "api-env.eba-45cakfm9.us-east-1.elasticbeanstalk.com",
+    '.amazonaws.com'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
