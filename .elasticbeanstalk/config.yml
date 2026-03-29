@@ -1,13 +1,11 @@
 branch-defaults:
-  default:
-    environment: api-env
-    group_suffix: null
   main:
-    environment: api-env
+    environment: Appointmentservice-api
+    group_suffix: null
 global:
-  application_name: appointmentservice-api
+  application_name: Appointmentservice-api
   branch: null
-  default_ec2_keyname: vockey
+  default_ec2_keyname: master-key
   default_platform: Python 3.12 running on 64bit Amazon Linux 2023
   default_region: us-east-1
   include_git_submodules: true
@@ -16,5 +14,5 @@ global:
   platform_version: null
   profile: null
   repository: null
-  sc: null
+  sc: git
   workspace_type: Application

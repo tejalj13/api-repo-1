@@ -72,7 +72,7 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-# 
+#
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
@@ -83,7 +83,7 @@ CORS_ALLOW_HEADERS = [
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
-    'x-api-key', #custom API Key header
+    'x-api-key',  # custom API Key header
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -120,11 +120,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME', default='appointmentdb'),
-        'USER': env('DB_USER', default='postgres'),
-        'PASSWORD': env('DB_PASSWORD', default=''),
-        'HOST': env('DB_HOST', default='localhost'),
-        'PORT': env('DB_PORT', default='5432'),
+        'NAME': os.environ.get('DB_NAME', 'appointmentapidb'),
+        'USER': os.environ.get('DB_USER', 'adminuser'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'ADMINpassword'),
+        'HOST': os.environ.get('DB_HOST', 'master-db.c6tssuawqvlg.us-east-1.rds.amazonaws.com'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
 
@@ -169,6 +169,3 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-
