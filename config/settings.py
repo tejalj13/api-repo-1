@@ -33,14 +33,14 @@ env = environ.Env()
 environ.Env.read_env()
 SECRET_KEY = env('SECRET_KEY', default='dev-secret-key')
 DEBUG = env.bool('DEBUG', default=False)
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '.vfs.cloud9.us-east-1.amazonaws.com',
-    "api-env.eba-45cakfm9.us-east-1.elasticbeanstalk.com",
-    '.amazonaws.com'
-]
-
+# ALLOWED_HOSTS = [
+#     'localhost',
+#     '127.0.0.1',
+#     '.vfs.cloud9.us-east-1.amazonaws.com',
+#     "api-env.eba-45cakfm9.us-east-1.elasticbeanstalk.com",
+#     '.amazonaws.com'
+# ]
+ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
     "https://*.vfs.cloud9.us-east-1.amazonaws.com",
 ]
