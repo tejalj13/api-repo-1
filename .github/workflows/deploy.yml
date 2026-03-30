@@ -3,7 +3,7 @@ name: CI/CD Pipeline Deploy & ZAP
 on:
   push:
     branches:
-      - main  # Triggers the pipeline when you push to main
+      - main  
  
 jobs:
   # ---------------------------------------------------
@@ -29,7 +29,7 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: Appointmentservice-api
           environment_name: Appointmentservice-api
-          version_label: "appointmentserviceapi-${{ github.sha }}" #
+          version_label: "appointmentserviceapi-${{ github.sha }}" 
           region: us-east-1
           deployment_package: deploy.zip
  
