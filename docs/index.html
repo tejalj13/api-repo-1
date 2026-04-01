@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Booking API Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .endpoint-card { transition: all 0.2s; }
+        .endpoint-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header class="bg-indigo-600 text-white py-12 px-6 sm:px-12">
+        <div class="max-w-5xl mx-auto">
+            <h1 class="text-4xl font-bold mb-4 text-white">Appointment Booking API</h1>
+            <p class="text-indigo-100 text-lg">
+                A highly scalable, transaction-safe RESTful API for managing service providers, automated availability generation, and customer bookings.
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto py-12 px-6 sm:px-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <aside class="col-span-1 hidden md:block">
+            <div class="sticky top-6">
+                <h3 class="font-bold text-gray-900 mb-4 uppercase tracking-wider text-sm">Endpoints</h3>
+                <ul class="space-y-2 text-gray-600">
+                    <li><a href="#register" class="hover:text-indigo-600"><span class="font-mono text-xs bg-green-100 text-green-800 px-1 py-0.5 rounded mr-2 uppercase">POST</span> /api/register/</a></li>
+                    <li><a href="#providers" class="hover:text-indigo-600"><span class="font-mono text-xs bg-green-100 text-green-800 px-1 py-0.5 rounded mr-2 uppercase">POST</span> /api/providers/</a></li>
+                    <li><a href="#generate" class="hover:text-indigo-600"><span class="font-mono text-xs bg-green-100 text-green-800 px-1 py-0.5 rounded mr-2 uppercase text-white bg-indigo-500">POST</span> /api/generate-slots/</a></li>
+                    <li><a href="#slots" class="hover:text-indigo-600"><span class="font-mono text-xs bg-blue-100 text-blue-800 px-1 py-0.5 rounded mr-2 uppercase">GET</span> /api/slots/</a></li>
+                    <li><a href="#book" class="hover:text-indigo-600"><span class="font-mono text-xs bg-green-100 text-green-800 px-1 py-0.5 rounded mr-2 uppercase">POST</span> /api/book/</a></li>
+                    <li><a href="#appointments" class="hover:text-indigo-600"><span class="font-mono text-xs bg-blue-100 text-blue-800 px-1 py-0.5 rounded mr-2 uppercase">GET</span> /api/appointments/</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <div class="col-span-1 md:col-span-2 space-y-12">
+
+            <section id="architecture" class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                <h2 class="text-2xl font-bold mb-4 border-b pb-2 text-gray-900">Architecture & Base URL</h2>
+                <p class="mb-4 text-gray-600">Built with <strong>Django REST Framework</strong> and <strong>AWS RDS PostgreSQL</strong>. This microservice architecture uses row-level locking to ensure zero double-bookings during high concurrency.</p>
+                <div class="bg-gray-900 text-gray-100 p-4 rounded-md font-mono text-sm overflow-x-auto">
+                    Base URL: http://api-env.eba-45cakfm9.us-east-1.elasticbeanstalk.com
+                </div>
+            </section>
+
+            <section id="authentication" class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                <h2 class="text-2xl font-bold mb-4 border-b pb-2 text-gray-900">Authentication</h2>
+                <p class="mb-4 text-gray-600">All endpoints (except registration) require a valid API key passed in the headers. Organizations are isolated; keys only grant access to data owned by that organization.</p>
+                <div class="bg-gray-900 text-gray-100 p-4 rounded-md font-mono text-sm">
+                    X-API-KEY: &lt;your_api_key&gt;<br>
+                    Content-Type: application/json
+                </div>
+            </section>
+
+            <div>
+                <h2 class="text-3xl font-bold mb-6 text-gray-900">API Reference</h2>
+
+                <div id="register" class="endpoint-card bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-8">
+                    <div class="flex items-center mb-4">
+                        <span class="font-mono font-bold text-sm bg-green-100 text-green-800 px-2 py-1 rounded mr-3">POST</span>
+                        <h3 class="text-xl font-semibold font-mono text-gray-900">/api/register/</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Onboards a new organization. Returns the <code class="bg-gray-100 px-1">api_key</code> required for all other requests.</p>
+                    <pre class="bg-gray-900 text-green-400 p-4 rounded-md font-mono text-sm overflow-x-auto">
+{
+  "organization_name": "Dublin Health",
+  "username": "admin_user",
+  "password": "secure_password"
+}</pre>
+                </div>
+
+                <div id="generate" class="endpoint-card bg-indigo-50 p-6 rounded-lg shadow-sm border border-indigo-200 mb-8">
+                    <div class="flex items-center mb-4">
+                        <span class="font-mono font-bold text-sm bg-indigo-600 text-white px-2 py-1 rounded mr-3">POST</span>
+                        <h3 class="text-xl font-semibold font-mono text-indigo-900">/api/generate-slots/</h3>
+                    </div>
+                    <p class="text-gray-700 mb-4 font-medium">Automated Schedule Generator</p>
+                    <p class="text-gray-600 mb-4 text-sm">Bulk-creates 30-minute availability slots for a provider. It skips existing slots to prevent duplicates.</p>
+                    <h4 class="font-semibold text-sm mb-2 uppercase text-gray-500">Payload</h4>
+                    <pre class="bg-gray-900 text-indigo-300 p-4 rounded-md font-mono text-sm overflow-x-auto">
+{
+  "provider_id": 1,
+  "date": "2026-03-15",
+  "start_time": "09:00",
+  "end_time": "17:00"
+}</pre>
+                </div>
+
+                <div id="providers" class="endpoint-card bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-8">
+                    <div class="flex items-center mb-4">
+                        <span class="font-mono font-bold text-sm bg-green-100 text-green-800 px-2 py-1 rounded mr-3">POST</span>
+                        <h3 class="text-xl font-semibold font-mono text-gray-900">/api/providers/</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Registers a new service provider (doctor/staff) within your organization.</p>
+                    <pre class="bg-gray-900 text-green-400 p-4 rounded-md font-mono text-sm overflow-x-auto">
+{ "name": "Dr. smith" }</pre>
+                </div>
+
+                <div id="slots" class="endpoint-card bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-8">
+                    <div class="flex items-center mb-4">
+                        <span class="font-mono font-bold text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded mr-3">GET</span>
+                        <h3 class="text-xl font-semibold font-mono text-gray-900">/api/slots/</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4 text-sm">Fetch available (unbooked) time slots. Use these <code class="bg-gray-100 px-1">slot_id</code> values for the booking endpoint.</p>
+                    <div class="bg-gray-100 p-3 rounded font-mono text-xs text-gray-700">
+                        GET /api/slots/?provider_id=1&date=2026-03-15
+                    </div>
+                </div>
+
+                <div id="book" class="endpoint-card bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-8">
+                    <div class="flex items-center mb-4">
+                        <span class="font-mono font-bold text-sm bg-green-100 text-green-800 px-2 py-1 rounded mr-3">POST</span>
+                        <h3 class="text-xl font-semibold font-mono text-gray-900">/api/book/</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Finalizes an appointment. This endpoint is idempotent and handles concurrency via database-level locking.</p>
+                    <pre class="bg-gray-900 text-green-400 p-4 rounded-md font-mono text-sm overflow-x-auto">
+{
+  "slot_id": 105,
+  "customer_name": "John Doe",
+  "customer_email": "john@example.com"
+}</pre>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-900 text-gray-400 text-center py-8 mt-12">
+        <p class="text-sm">Built by Tejal | MSc Cloud Computing | National College of Ireland</p>
+    </footer>
+
+</body>
+</html>
